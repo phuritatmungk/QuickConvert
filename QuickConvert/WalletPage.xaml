@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:QuickConvert"
+             x:Class="QuickConvert.WalletPage"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#121212}">
+    <Grid RowDefinitions="*">
+        <!-- Main Content -->
+        <VerticalStackLayout Spacing="0" Padding="0">
+            <!-- Top Bar -->
+            <Grid Padding="20,30,20,10" BackgroundColor="{AppThemeBinding Light=White, Dark=#121212}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Text="WALLET" FontSize="20" Margin="25,0,0,0" FontAttributes="Bold" HorizontalOptions="Center" Grid.Column="1" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F66FF}"/>
+                <Label x:Name="AddButton" Text="＋" FontSize="22" Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+            </Grid>
+            <!-- Wallet List -->
+            <CollectionView x:Name="WalletList" ItemsSource="{Binding WalletItems}" Margin="20,10,20,20">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20" Margin="20">
+                        <Label 
+                            Text="💼" 
+                            FontSize="72" 
+                            HorizontalOptions="Center" 
+                            TextColor="{AppThemeBinding Light=#CCCCCC, Dark=#333333}"/>
+                        <Label 
+                            Text="Your wallet is empty" 
+                            FontSize="18" 
+                            HorizontalOptions="Center"
+                            TextColor="{AppThemeBinding Light=#666666, Dark=#BBBBBB}"/>
+                        <Label 
+                            Text="Tap the + icon to add currencies to your wallet" 
+                            FontSize="14" 
+                            HorizontalOptions="Center" 
+                            HorizontalTextAlignment="Center"
+                            TextColor="{AppThemeBinding Light=#888888, Dark=#999999}"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Delete"
+                                             BackgroundColor="#FF3B30"
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type local:WalletPage}}, Path=DeleteCommand}"
+                                             CommandParameter="{Binding .}"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Border 
+                                StrokeShape="RoundRectangle 12" 
+                                Stroke="{AppThemeBinding Light=#5F259F, Dark=#9F66FF}" 
+                                StrokeThickness="0.5"
+                                Padding="16,12" 
+                                BackgroundColor="{AppThemeBinding Light=White, Dark=#222222}" 
+                                Margin="0,0,0,12">
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <Label Text="{Binding Flag}" FontSize="32" Grid.Column="0" VerticalOptions="Center"/>
+                                    <Label Text="{Binding DisplayText}" FontSize="16" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                                    <Label Text="✎" FontSize="20" Grid.Column="2" VerticalOptions="Center" Margin="10,0,0,0" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F66FF}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={x:Reference WalletList}, Path=BindingContext.EditCommand}" CommandParameter="{Binding .}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Grid>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

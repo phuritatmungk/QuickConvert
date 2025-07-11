@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:QuickConvert"
+             xmlns:resources="clr-namespace:QuickConvert.Resources"
+             x:Class="QuickConvert.BookmarkPage"
+             x:DataType="local:BookmarkPageViewModel"
+             x:Name="BookmarkPageRoot"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark=#121212}">
+    <Grid RowDefinitions="*">
+        <!-- Main Content -->
+        <VerticalStackLayout Spacing="0" Padding="0">
+            <!-- Top Bar -->
+            <Grid Padding="20,30,20,10" BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark=#121212}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Text="←" FontSize="22" Grid.Column="0" VerticalOptions="Center" TextColor="{AppThemeBinding Light=Black, Dark=White}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackButtonClicked"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="BOOKMARKS" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" Grid.Column="1" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F66FF}"/>
+            </Grid>
+            
+            <!-- Bookmarks List -->
+            <CollectionView 
+                ItemsSource="{Binding Bookmarks}" 
+                Margin="20,10,20,20"
+                SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20" Margin="20">
+                        <Label 
+                            Text="★" 
+                            FontSize="72" 
+                            HorizontalOptions="Center" 
+                            TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}"/>
+                        <Label 
+                            Text="No bookmarked currencies yet" 
+                            FontSize="18" 
+                            HorizontalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}"/>
+                        <Label 
+                            Text="Tap the star icon next to a currency to bookmark it" 
+                            FontSize="14" 
+                            HorizontalOptions="Center" 
+                            HorizontalTextAlignment="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:CurrencyBookmark">
+                        <Border 
+                            StrokeShape="RoundRectangle 16" 
+                            Margin="0,8,0,0" 
+                            Padding="16"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark=#222222}"
+                            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark=#333333}">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnCurrencyItemTapped" CommandParameter="{Binding CurrencyCode}"/>
+                            </Border.GestureRecognizers>
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Label 
+                                    Text="{Binding CurrencyCode, Converter={StaticResource CurrencyCodeToFlagConverter}}" 
+                                    FontSize="28" 
+                                    Grid.Column="0" 
+                                    VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Label 
+                                        Text="{Binding CurrencyCode}" 
+                                        FontSize="18" 
+                                        FontAttributes="Bold"
+                                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark=White}"/>
+                                    <Label 
+                                        Text="{Binding CurrencyName}" 
+                                        FontSize="14"
+                                        TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"/>
+                                </VerticalStackLayout>
+                                <Button
+                                    Text="★"
+                                    Clicked="OnRemoveBookmarkClicked"
+                                    CommandParameter="{Binding CurrencyCode}"
+                                    FontSize="22"
+                                    BackgroundColor="Transparent"
+                                    Padding="0"
+                                    Grid.Column="2"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="End"
+                                    TextColor="Gold"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </Grid>
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <resources:CurrencyCodeToFlagConverter x:Key="CurrencyCodeToFlagConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+</ContentPage> 

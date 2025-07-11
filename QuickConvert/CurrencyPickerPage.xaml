@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resources="clr-namespace:QuickConvert.Resources"
+             x:Class="QuickConvert.CurrencyPickerPage"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#121212}">
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!-- Top Bar -->
+        <Grid Grid.Row="0" Padding="20,30,20,10" BackgroundColor="{AppThemeBinding Light=White, Dark=#121212}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Text="←"
+                FontSize="24"
+                FontAttributes="Bold"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                Padding="0"
+                BorderWidth="0"
+                Clicked="OnBackButtonClicked"
+                WidthRequest="44"
+                HeightRequest="44"
+                Grid.Column="0"
+                VerticalOptions="Center"
+                HorizontalOptions="Start"/>
+            
+            <Label 
+                Text="SELECT CURRENCY" 
+                FontSize="20" 
+                FontAttributes="Bold" 
+                Grid.Column="1" 
+                HorizontalOptions="Center"
+                VerticalOptions="Center" 
+                TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F66FF}"/>
+        </Grid>
+
+        <!-- Search Bar -->
+        <Grid Grid.Row="1" Padding="16,0,16,12" BackgroundColor="{AppThemeBinding Light=White, Dark=#121212}">
+            <Border StrokeShape="RoundRectangle 10" 
+                    BackgroundColor="{AppThemeBinding Light=#F2F2F2, Dark=#2D2D2D}" 
+                    Padding="10,0" 
+                    StrokeThickness="0">
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label Grid.Column="0" Text="🔍" FontSize="18" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1" x:Name="SearchEntry" Placeholder="Search currencies" 
+                           TextChanged="OnSearchTextChanged" 
+                           VerticalOptions="Center" 
+                           Margin="0" 
+                           BackgroundColor="Transparent"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                           PlaceholderColor="{AppThemeBinding Light=#AAAAAA, Dark=#888888}"/>
+                    <Button Grid.Column="2" 
+                            x:Name="ClearSearchButton" 
+                            Text="✕" 
+                            FontSize="18" 
+                            WidthRequest="30" 
+                            HeightRequest="30" 
+                            Padding="0" 
+                            BorderWidth="0"
+                            BackgroundColor="Transparent" 
+                            IsVisible="False" 
+                            Clicked="OnClearSearchClicked"
+                            VerticalOptions="Center"/>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!-- Currency List -->
+        <CollectionView Grid.Row="2" x:Name="CurrencyList" 
+                        SelectionMode="Single" 
+                        SelectionChanged="OnSelectionChanged"
+                        ItemsLayout="VerticalGrid, 1"
+                        Margin="16,0">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20" Margin="20">
+                    <Label 
+                        Text="🔍" 
+                        FontSize="72" 
+                        HorizontalOptions="Center" 
+                        TextColor="{AppThemeBinding Light=#CCCCCC, Dark=#333333}"/>
+                    <Label 
+                        Text="No currencies found" 
+                        FontSize="18" 
+                        HorizontalOptions="Center"
+                        TextColor="{AppThemeBinding Light=#666666, Dark=#BBBBBB}"/>
+                    <Label 
+                        Text="Try a different search term" 
+                        FontSize="14" 
+                        HorizontalOptions="Center" 
+                        HorizontalTextAlignment="Center"
+                        TextColor="{AppThemeBinding Light=#888888, Dark=#999999}"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="0,5" Padding="16,12" 
+                            StrokeShape="RoundRectangle 12" 
+                            StrokeThickness="0" 
+                            BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#222222}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Grid.Column="0" 
+                                   Text="{Binding ., Converter={StaticResource CurrencyCodeToFlagConverter}}" 
+                                   FontSize="32"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1" 
+                                   Text="{Binding .}" 
+                                   FontSize="18" 
+                                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <resources:CurrencyCodeToFlagConverter x:Key="CurrencyCodeToFlagConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+</ContentPage> 

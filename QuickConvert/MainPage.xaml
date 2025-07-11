@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:QuickConvert"
+             x:Class="QuickConvert.MainPage"
+             x:DataType="local:MainPage"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark=#121212}">
+
+    <VerticalStackLayout Spacing="0" Padding="0">
+        
+        <Grid Padding="20,30,20,10" BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark=#121212}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button
+                x:Name="DarkModeToggle"
+                Text="🌙"
+                FontSize="22"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                Clicked="OnDarkModeToggleClicked"
+                Padding="0"
+                CornerRadius="20"
+                WidthRequest="44"
+                HeightRequest="44"
+                VerticalOptions="Center"
+                BorderWidth="0"
+                Grid.Column="0"/>
+            <Label Text="QUICKCONVERT" FontSize="20" FontAttributes="Bold" Margin="-40,0,0,0" HorizontalOptions="Center" Grid.Column="1" VerticalOptions="Center" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}"/>
+        </Grid>
+
+        
+        <Button 
+            Text="Bookmark" 
+            StyleClass="BookmarkButton" 
+            Margin="20,0,20,10" 
+            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#5F3DC4}" 
+            TextColor="White" 
+            CornerRadius="20" 
+            HeightRequest="36" 
+            Clicked="OnBookmarkButtonClicked"/>
+
+        <!-- Currency Selection Card -->
+        <Border Margin="20,0,20,0" StrokeShape="RoundRectangle 20" BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark=#222222}" Padding="16">
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!-- Source Currency -->
+                <Grid Grid.Column="0" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label 
+                        Grid.Column="0"
+                        Text="{Binding SourceCurrency, Converter={StaticResource CurrencyCodeToFlagConverter}}"
+                        FontSize="36"
+                        WidthRequest="48"
+                        HeightRequest="48"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"/>
+                    
+                    <Button 
+                        Grid.Column="1"
+                        Text="{Binding SourceCurrency}" 
+                        Clicked="OnSourceCurrencyButtonClicked" 
+                        Style="{StaticResource ModernCurrencyButton}" 
+                        FontSize="18"
+                        Padding="0"
+                        Margin="20,0,5,0"/>
+                    
+                    <!-- Source Currency Star -->
+                    <Border
+                        Grid.Column="2"
+                        Padding="0"
+                        Margin="8,0,-20,0"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 20"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                        <Label
+                            x:Name="SourceStarLabel"
+                            Text="★"
+                            FontSize="26"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center">
+                            <Label.TextColor>
+                                <MultiBinding Converter="{StaticResource BookmarkStarColorConverter}">
+                                    <Binding Path="SourceCurrency"/>
+                                    <Binding Path="BookmarkedCurrencies"/>
+                                    <Binding Path="BookmarkRefreshKey"/>
+                                </MultiBinding>
+                            </Label.TextColor>
+                        </Label>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                CommandParameter="{Binding SourceCurrency}"
+                                Tapped="OnBookmarkTapped"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </Grid>
+                
+                <!-- Swap Icon -->
+                <Button
+                    Grid.Column="1"
+                    Text="⇄"
+                    FontSize="22"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                    BackgroundColor="Transparent" 
+                    BorderWidth="0"
+                    Clicked="OnSwapButtonClicked"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    WidthRequest="44"
+                    HeightRequest="44"/>
+                
+                <!-- Target Currency -->
+                <Grid Grid.Column="2" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label 
+                        Grid.Column="0"
+                        Text="{Binding TargetCurrency, Converter={StaticResource CurrencyCodeToFlagConverter}}"
+                        FontSize="36"
+                        WidthRequest="48"
+                        HeightRequest="48"
+                        Margin="-10"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"/>
+                    
+                    <Button 
+                        Grid.Column="1"
+                        Text="{Binding TargetCurrency}" 
+                        Clicked="OnTargetCurrencyButtonClicked" 
+                        Style="{StaticResource ModernCurrencyButton}" 
+                        FontSize="18"
+                        Padding="0"
+                        Margin="20,0,0,0"/>
+                    
+                    <!-- Target Currency Star -->
+                    <Border
+                        Grid.Column="2"
+                        Padding="0"
+                        Margin="8,0,-10,0"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 20"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                        <Label
+                            x:Name="TargetStarLabel"
+                            Text="★"
+                            FontSize="26"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center">
+                            <Label.TextColor>
+                                <MultiBinding Converter="{StaticResource BookmarkStarColorConverter}">
+                                    <Binding Path="TargetCurrency"/>
+                                    <Binding Path="BookmarkedCurrencies"/>
+                                    <Binding Path="BookmarkRefreshKey"/>
+                                </MultiBinding>
+                            </Label.TextColor>
+                        </Label>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                CommandParameter="{Binding TargetCurrency}"
+                                Tapped="OnBookmarkTapped"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Amount Input -->
+        <Entry Text="{Binding SourceAmount, Mode=TwoWay}" 
+               Placeholder="Enter amount" 
+               Keyboard="Numeric" 
+               FontSize="20" 
+               HorizontalTextAlignment="Center" 
+               Margin="20,10,20,0" 
+               BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark=#2D2D2D}" 
+               TextColor="{AppThemeBinding Light=Black, Dark=White}"
+               PlaceholderColor="{AppThemeBinding Light=#AAAAAA, Dark=#888888}"
+               HeightRequest="48"/>
+
+        <!-- Result Card -->
+        <Border Margin="20,20,20,10" StrokeShape="RoundRectangle 20" BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#5F3DC4}" Padding="0" HeightRequest="70" VerticalOptions="Center">
+            <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="{Binding TargetAmount, StringFormat='{}{0}'}" FontSize="32" FontAttributes="Bold" TextColor="White" VerticalTextAlignment="Center"/>
+                <Label Text="{Binding TargetCurrency}" FontSize="20" FontAttributes="Bold" TextColor="White" Margin="8,0,0,0" VerticalTextAlignment="Center"/>
+            </HorizontalStackLayout>
+        </Border>
+
+        <!-- Conversion Table -->
+        <Border Margin="20,0,20,20" StrokeShape="RoundRectangle 20" BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark=#222222}" Padding="0">
+            <Grid RowSpacing="0" ColumnSpacing="0" Padding="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Header -->
+                <BoxView Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#5F3DC4}" HeightRequest="40"/>
+                <Label Grid.Row="0" Grid.Column="0" Text="{Binding SourceCurrency}" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding TargetCurrency}" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <!-- Conversion Rows -->
+                <Label Grid.Row="1" Grid.Column="0" Text="{Binding SourceCurrency, StringFormat='1 {0}'}" TextColor="{AppThemeBinding Light=#3B5BDB, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Table1}" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="2" Grid.Column="0" Text="{Binding SourceCurrency, StringFormat='5 {0}'}" TextColor="{AppThemeBinding Light=#3B5BDB, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Table5}" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="3" Grid.Column="0" Text="{Binding SourceCurrency, StringFormat='10 {0}'}" TextColor="{AppThemeBinding Light=#3B5BDB, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="3" Grid.Column="1" Text="{Binding Table10}" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="4" Grid.Column="0" Text="{Binding SourceCurrency, StringFormat='50 {0}'}" TextColor="{AppThemeBinding Light=#3B5BDB, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="4" Grid.Column="1" Text="{Binding Table50}" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="5" Grid.Column="0" Text="{Binding SourceCurrency, StringFormat='100 {0}'}" TextColor="{AppThemeBinding Light=#3B5BDB, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="5" Grid.Column="1" Text="{Binding Table100}" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="6" Grid.Column="0" Text="{Binding SourceCurrency, StringFormat='1000 {0}'}" TextColor="{AppThemeBinding Light=#3B5BDB, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="6" Grid.Column="1" Text="{Binding Table1000}" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+        </Border>
+    </VerticalStackLayout>
+</ContentPage>

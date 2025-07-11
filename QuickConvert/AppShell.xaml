@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="QuickConvert.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QuickConvert"
+    Shell.FlyoutBehavior="Disabled"
+    Title="QuickConvert">
+
+    <Shell.Resources>
+        <Style x:Key="BaseStyle" TargetType="Element">
+            <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray950}}" />
+            <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+            <Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
+            <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray950}}" />
+            <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+            <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </Style>
+        <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
+    </Shell.Resources>
+
+    <TabBar>
+        <ShellContent
+            Route="MainPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="MaterialIcons"
+                                Glyph="&#xe8ee;"
+                                Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            </ShellContent.Icon>
+            <ShellContent.ContentTemplate>
+                <DataTemplate>
+                    <local:MainPage />
+                </DataTemplate>
+            </ShellContent.ContentTemplate>
+        </ShellContent>
+        <ShellContent
+            Route="ExchangeRateTrendsPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="MaterialIcons"
+                                Glyph="&#xe24b;"
+                                Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            </ShellContent.Icon>
+            <ShellContent.ContentTemplate>
+                <DataTemplate>
+                    <local:ExchangeRateTrendsPage />
+                </DataTemplate>
+            </ShellContent.ContentTemplate>
+        </ShellContent>
+        <ShellContent
+            Route="ChartPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="MaterialIcons"
+                                Glyph="&#xe6e1;"
+                                Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            </ShellContent.Icon>
+            <ShellContent.ContentTemplate>
+                <DataTemplate>
+                    <local:ChartPage />
+                </DataTemplate>
+            </ShellContent.ContentTemplate>
+        </ShellContent>
+        <ShellContent
+            Route="WalletPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="MaterialIcons"
+                                Glyph="&#xe850;"
+                                Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            </ShellContent.Icon>
+            <ShellContent.ContentTemplate>
+                <DataTemplate>
+                    <local:WalletPage />
+                </DataTemplate>
+            </ShellContent.ContentTemplate>
+        </ShellContent>
+    </TabBar>
+    
+    <!-- Add BookmarkPage with NavBarIsVisible="False" -->
+    <ShellContent 
+        Route="BookmarkPage"
+        ContentTemplate="{DataTemplate local:BookmarkPage}"
+        Shell.NavBarIsVisible="False" />
+
+</Shell>

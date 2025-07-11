@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QuickConvert.ChartPage"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#121212}">
+    <Grid RowDefinitions="*,Auto">
+        <!-- Main Content -->
+        <ScrollView Grid.Row="0">
+        <VerticalStackLayout Spacing="0" Padding="0">
+            <!-- Top Bar -->
+            <Grid Padding="20,30,20,10" BackgroundColor="{AppThemeBinding Light=White, Dark=#121212}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="CHART" FontSize="20" Margin="-10,0,0,0" FontAttributes="Bold" HorizontalOptions="Center" Grid.Column="1" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}"/>
+                </Grid>
+
+            <!-- Currency Pair Selector -->
+            <Grid Padding="20,10,20,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <!-- Base Currency -->
+                <Border Grid.Column="0" StrokeShape="RoundRectangle 16" BackgroundColor="{AppThemeBinding Light=#F3F0FF, Dark=#2D2D2D}" Padding="10,8">
+                    <HorizontalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding BaseCurrency}" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}"/>
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBaseCurrencyPickerClicked"/>
+                    </Border.GestureRecognizers>
+                </Border>
+                
+                <!-- Separator -->
+                <Label Text="→" FontSize="20" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}"/>
+                
+                <!-- Target Currency -->
+                <Border Grid.Column="2" StrokeShape="RoundRectangle 16" BackgroundColor="{AppThemeBinding Light=#F3F0FF, Dark=#2D2D2D}" Padding="10,8">
+                    <HorizontalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding TargetCurrency}" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}"/>
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTargetCurrencyPickerClicked"/>
+                    </Border.GestureRecognizers>
+                </Border>
+            </Grid>
+                
+            <!-- Currency Values Display -->
+            <Grid Padding="20,5,20,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                
+                <Label Text="{Binding CurrentValueText}" FontSize="20" FontAttributes="Bold" Grid.Column="0" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}"/>
+                <Label Text="{Binding PreviousValueText}" FontSize="14" Grid.Column="1" VerticalOptions="Center" TextColor="{AppThemeBinding Light=Gray, Dark=#AAAAAA}" Margin="0,0,8,0"/>
+                <Label Text="{Binding CurrentTrend}" FontSize="14" Grid.Column="2" VerticalOptions="Center" TextColor="{Binding TrendColor}"/>
+            </Grid>
+                
+            <!-- Time Range Selectors -->
+            <HorizontalStackLayout Padding="20,10,20,0" Spacing="8" HorizontalOptions="Center">
+                <Border x:Name="weekButton" StrokeShape="RoundRectangle 12" BackgroundColor="{Binding WeekBackground}" Padding="12,4" BindingContext="1w">
+                    <Label Text="1w" FontSize="14" TextColor="{Binding WeekTextColor}"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTimeRangeSelected"/>
+                    </Border.GestureRecognizers>
+                </Border>
+                <Border x:Name="monthButton" StrokeShape="RoundRectangle 12" BackgroundColor="{Binding MonthBackground}" Padding="12,4" BindingContext="1m">
+                    <Label Text="1m" FontSize="14" TextColor="{Binding MonthTextColor}"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTimeRangeSelected"/>
+                    </Border.GestureRecognizers>
+                </Border>
+                <Border x:Name="yearButton" StrokeShape="RoundRectangle 12" BackgroundColor="{Binding YearBackground}" Padding="12,4" BindingContext="1y">
+                    <Label Text="1y" FontSize="14" TextColor="{Binding YearTextColor}"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTimeRangeSelected"/>
+                    </Border.GestureRecognizers>
+                </Border>
+                <!-- Refresh button next to 1y -->
+                <Border StrokeShape="RoundRectangle 12" BackgroundColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}" Padding="12,4">
+                    <Label Text="🔄" FontSize="14" TextColor="White"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRefreshClicked"/>
+                    </Border.GestureRecognizers>
+                </Border>
+            </HorizontalStackLayout>
+                
+            <!-- Enhanced Chart View -->
+            <Border Margin="20,15,20,5" Padding="10" HeightRequest="220" StrokeShape="RoundRectangle 20" BackgroundColor="{AppThemeBinding Light=#F3F0FF, Dark=#2D2D2D}">
+                <Grid>
+                    <!-- Value guidelines -->
+                    <Label Text="{Binding MaxValueText}" FontSize="10" VerticalOptions="Start" Margin="5,15,0,0" TextColor="{AppThemeBinding Light=#909090, Dark=#AAAAAA}"/>
+                    <Label Text="{Binding MidValueText}" FontSize="10" VerticalOptions="Center" Margin="5,0,0,0" TextColor="{AppThemeBinding Light=#909090, Dark=#AAAAAA}"/>
+                    <Label Text="{Binding MinValueText}" FontSize="10" VerticalOptions="End" Margin="5,0,0,20" TextColor="{AppThemeBinding Light=#909090, Dark=#AAAAAA}"/>
+                    
+                    <!-- Horizontal grid lines -->
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#E0E0E0, Dark=#444444}" Margin="0,40,0,0" VerticalOptions="Start" HorizontalOptions="Fill" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#E0E0E0, Dark=#444444}" Margin="0,80,0,0" VerticalOptions="Start" HorizontalOptions="Fill" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#E0E0E0, Dark=#444444}" Margin="0,120,0,0" VerticalOptions="Start" HorizontalOptions="Fill" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#E0E0E0, Dark=#444444}" Margin="0,160,0,0" VerticalOptions="Start" HorizontalOptions="Fill" />
+                    
+                    <!-- Chart fill area -->
+                    <Path 
+                          x:Name="chartFill"
+                          Fill="{AppThemeBinding Light=#4400CC44, Dark=#33669900}" 
+                          Data="{Binding ChartFillPathData, Converter={StaticResource StringPathToGeometryConverter}}" 
+                          HorizontalOptions="Fill"
+                          VerticalOptions="Fill" 
+                          Aspect="Fill" />
+                              
+                    <!-- Chart line -->
+                    <Path 
+                          x:Name="chartPath"
+                          Stroke="{AppThemeBinding Light=#00cc44, Dark=#66cc00}" 
+                          StrokeThickness="3"
+                          StrokeLineCap="Round"
+                          StrokeLineJoin="Round"
+                          Data="{Binding ChartPathData, Converter={StaticResource StringPathToGeometryConverter}}" 
+                          HorizontalOptions="Fill"
+                          VerticalOptions="Fill" 
+                          Aspect="Fill" />
+                    
+                    <!-- Date labels -->
+                    <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="End" Margin="0,0,0,5">
+                        <Label x:Name="startDateLabel"
+                               FontSize="10" TextColor="{AppThemeBinding Light=#909090, Dark=#AAAAAA}" 
+                               HorizontalOptions="Start" />
+                        <Label x:Name="endDateLabel"
+                               FontSize="10" TextColor="{AppThemeBinding Light=#909090, Dark=#AAAAAA}" 
+                               HorizontalOptions="EndAndExpand" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Border>
+            
+            <!-- Summary Values -->
+            <Grid Padding="20,10,20,0" ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
+                    <Label Text="High" FontSize="12" TextColor="{AppThemeBinding Light=#A0A0A0, Dark=#BBBBBB}" HorizontalTextAlignment="Center"/>
+                    <Label Text="{Binding HighValueText}" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" TextColor="#29A745"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
+                    <Label Text="Low" FontSize="12" TextColor="{AppThemeBinding Light=#A0A0A0, Dark=#BBBBBB}" HorizontalTextAlignment="Center"/>
+                    <Label Text="{Binding LowValueText}" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" TextColor="#DC3545"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
+                    <Label Text="Average" FontSize="12" TextColor="{AppThemeBinding Light=#A0A0A0, Dark=#BBBBBB}" HorizontalTextAlignment="Center"/>
+                    <Label Text="{Binding AverageValueText}" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                </VerticalStackLayout>
+            </Grid>
+            
+            <!-- Base currency display -->
+            <Border Margin="20,15,20,0" StrokeShape="RoundRectangle 16" BackgroundColor="{AppThemeBinding Light=#F3F0FF, Dark=#2D2D2D}" Padding="15,10">
+                <Grid ColumnDefinitions="Auto,*,*">
+                    <Image x:Name="baseCurrencyFlag" Grid.Column="0" WidthRequest="24" HeightRequest="24" VerticalOptions="Center" Margin="0,0,10,0"/>
+                    <Label Text="{Binding BaseCurrency}" FontSize="16" Grid.Column="1" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}" FontAttributes="Bold"/>
+                    <Label Text="{Binding CurrentTrend}" FontSize="14" Grid.Column="2" VerticalOptions="Center" TextColor="{Binding TrendColor}" HorizontalOptions="End"/>
+                </Grid>
+            </Border>
+            
+            <!-- Target currency display -->
+            <Border Margin="20,10,20,0" StrokeShape="RoundRectangle 16" BackgroundColor="{AppThemeBinding Light=#F3F0FF, Dark=#2D2D2D}" Padding="15,10">
+                <Grid ColumnDefinitions="Auto,*,*">
+                    <Image x:Name="targetCurrencyFlag" Grid.Column="0" WidthRequest="24" HeightRequest="24" VerticalOptions="Center" Margin="0,0,10,0"/>
+                    <Label Text="{Binding TargetCurrency}" FontSize="16" Grid.Column="1" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}" FontAttributes="Bold"/>
+                    <Label Text="{Binding LastUpdatedText}" FontSize="12" Grid.Column="2" VerticalOptions="Center" TextColor="{AppThemeBinding Light=Gray, Dark=#AAAAAA}" HorizontalOptions="End"/>
+                </Grid>
+            </Border>
+            
+            <!-- Data Points List with improved display -->
+            <VerticalStackLayout Padding="20,15,20,20" Spacing="8">
+                <Label Text="Historical Data Points" FontSize="16" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}"/>
+                <CollectionView ItemsSource="{Binding ChartData}" HeightRequest="250">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="*,Auto" Padding="0,8" Margin="0,0,0,4">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnDataPointTapped" CommandParameter="{Binding}"/>
+                                </Grid.GestureRecognizers>
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label Text="{Binding Date, StringFormat='{0:ddd, dd MMM yyyy}'}" FontSize="14" TextColor="{AppThemeBinding Light=#303030, Dark=#EEEEEE}"/>
+                                    <Label Text="{Binding Time, StringFormat='{0:HH:mm}'}" FontSize="12" TextColor="{AppThemeBinding Light=#707070, Dark=#AAAAAA}"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End">
+                                    <Label Text="{Binding Value, StringFormat='{0:F4}'}" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#5F259F, Dark=#9F7AEA}"
+                                          HorizontalOptions="End"/>
+                                    <Label Text="{Binding ChangeText}" FontSize="12" TextColor="{Binding ChangeColor}"
+                                          HorizontalOptions="End"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+        </ScrollView>
+        
+        <!-- Invisible navigation controls -->
+        <Grid Grid.Row="1" IsVisible="False">
+            <Label>
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnHomeClicked"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label>
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnWalletClicked"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label>
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTrendsClicked"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+    </Grid>
+</ContentPage> 

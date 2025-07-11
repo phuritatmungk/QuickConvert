@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:QuickConvert"
+             x:Class="QuickConvert.ExchangeRateTrendsPage"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark=#121212}">
+    
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
+                <!-- Top Bar -->
+        <Grid Grid.Row="0" Padding="20,16" BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark=#121212}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+            <Label Text="Exchange Rate Trends" 
+                   FontSize="22" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Start" 
+                   Grid.Column="0" 
+                   VerticalOptions="Center" 
+                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}"/>
+            
+            <!-- Refresh Button -->
+            <Border Grid.Column="1" 
+                    StrokeShape="RoundRectangle 20" 
+                    BackgroundColor="{AppThemeBinding Light=#F3F0FF, Dark=#2D2D2D}" 
+                    Padding="8" 
+                    StrokeThickness="0">
+                <Label Text="🔄" 
+                       FontSize="18" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRefreshClicked"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Border>
+                </Grid>
+        
+        <!-- Search Bar -->
+        <Grid Grid.Row="1" Padding="16,0,16,8" BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark=#121212}">
+            <Border StrokeShape="RoundRectangle 10" 
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark=#222222}" 
+                    Padding="10,0" 
+                    StrokeThickness="0">
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label Grid.Column="0" Text="🔍" FontSize="18" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1" 
+                           Text="{Binding SearchText, Mode=TwoWay}" 
+                           Placeholder="Search currencies" 
+                           VerticalOptions="Center" 
+                           Margin="0" 
+                           BackgroundColor="Transparent"
+                           PlaceholderColor="{AppThemeBinding Light=Gray, Dark=DarkGray}"/>
+                    <Button Grid.Column="2" 
+                            Text="✕" 
+                            FontSize="18" 
+                            WidthRequest="30" 
+                            HeightRequest="30" 
+                            Padding="0" 
+                            BorderWidth="0"
+                            BackgroundColor="Transparent" 
+                            IsVisible="{Binding SearchText, Converter={StaticResource StringNotEmptyConverter}}" 
+                            Clicked="OnClearSearchClicked"
+                            VerticalOptions="Center"/>
+                </Grid>
+            </Border>
+                    </Grid>
+        
+        <!-- Base Currency and Time Range Selector -->
+        <Grid Grid.Row="2" Padding="16,8,16,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <!-- Base Currency Selector -->
+            <Border Grid.Column="0" 
+                    Grid.Row="0" 
+                    StrokeShape="RoundRectangle 12" 
+                    BackgroundColor="{AppThemeBinding Light=#F3F0FF, Dark=#2D2D2D}" 
+                    Padding="10,8"
+                    StrokeThickness="0">
+                <HorizontalStackLayout HorizontalOptions="Center">
+                    <Label Text="Base Currency: " 
+                           FontSize="16" 
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}"/>
+                    <Picker Title="Select Base Currency" 
+                            ItemsSource="{Binding PopularCurrencies}" 
+                            SelectedItem="{Binding BaseCurrency}" 
+                            WidthRequest="100"
+                            FontSize="16" 
+                            FontAttributes="Bold"
+                            VerticalOptions="Center"
+                            BackgroundColor="Transparent"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}"/>
+                </HorizontalStackLayout>
+            </Border>
+            
+            <!-- Time Range Button -->
+            <Border Grid.Column="1" 
+                    Grid.Row="0" 
+                    StrokeShape="RoundRectangle 12" 
+                    BackgroundColor="{AppThemeBinding Light=#F3F0FF, Dark=#2D2D2D}" 
+                    Padding="10,8" 
+                    Margin="8,0,0,0" 
+                    StrokeThickness="0">
+                <HorizontalStackLayout HorizontalOptions="Center">
+                    <Label Text="{Binding TimeRangeText}" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}"/>
+                </HorizontalStackLayout>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnChangeTimeRangeClicked"/>
+                </Border.GestureRecognizers>
+            </Border>
+            
+            <!-- Last Update Info -->
+            <VerticalStackLayout Grid.Row="1" 
+                                 Grid.ColumnSpan="2" 
+                                 Spacing="2" 
+                                 Margin="0,8,0,0" 
+                                 HorizontalOptions="Center">
+                <Label Text="{Binding LastUpdatedText}" 
+                       FontSize="12" 
+                       TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}" 
+                       HorizontalOptions="Center"/>
+                <Label Text="{Binding ComparisonDateDescription}" 
+                       FontSize="12" 
+                       TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}" 
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+        
+        <!-- Exchange Rate List -->
+        <CollectionView Grid.Row="3" 
+                        ItemsSource="{Binding ExchangeRates}" 
+                        Margin="12,0,12,0"
+                        RemainingItemsThreshold="5"
+                        RemainingItemsThresholdReached="OnLoadMoreItems">
+            <CollectionView.EmptyView>
+                <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                    <Label Text="No matching currencies found" 
+                           TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Try a different search term" 
+                           TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}"
+                           HorizontalOptions="Center" 
+                           FontSize="Small"/>
+                </StackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="12,10" 
+                            Margin="4,6" 
+                            StrokeShape="RoundRectangle 10" 
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark=#222222}"
+                            StrokeThickness="0">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Label Grid.Column="0" 
+                                   Text="{Binding Flag}" 
+                                   FontSize="32" 
+                                   VerticalOptions="Center"/>
+                            
+                            <VerticalStackLayout Grid.Column="1" Margin="12,0" Spacing="2">
+                                <Label Text="{Binding CurrencyCode}" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"/>
+                                <Label Text="{Binding FormattedRate}" 
+                                       FontSize="14" 
+                                       TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                            </VerticalStackLayout>
+                            
+                            <Label Grid.Column="2" 
+                                   Text="{Binding FormattedChange}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center"
+                                   TextColor="{Binding Change, Converter={StaticResource ChangeColorConverter}}"/>
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer CommandParameter="{Binding .}" 
+                                                  Tapped="OnCurrencySelected"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+        <!-- Activity Indicator -->
+        <Grid Grid.RowSpan="4" 
+              BackgroundColor="{AppThemeBinding Light=#80FFFFFF, Dark=#80000000}" 
+              IsVisible="{Binding IsLoading}">
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                               Color="{AppThemeBinding Light={StaticResource Primary}, Dark=#9F66FF}" 
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center"
+                               WidthRequest="40"
+                               HeightRequest="40"/>
+        </Grid>
+    </Grid>
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:ChangeColorConverter x:Key="ChangeColorConverter" />
+            <local:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+</ContentPage> 
